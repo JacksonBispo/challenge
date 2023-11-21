@@ -17,6 +17,7 @@ public class SavePautaTest {
 
     @Mock
     private PautaRespository pautaRespository;
+
     @Test
     @DisplayName("Should save a Pauta with sucess")
     void shouldSavePautaSuccess(){
