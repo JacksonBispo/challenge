@@ -11,12 +11,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Pauta {
+@Table(name = "tb_voto")
+public class Voto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String descricao;
+    @ManyToOne
+    @JoinColumn(name = "sessao_id")
+    private Sessao sessaoVotacao;
+
+    @OneToOne
+    @JoinColumn(name = "associado_id")
+    private Associado associado;
+
+    @Enumerated(value = EnumType.ORDINAL)
+    private VotoEnum voto;
+
 }

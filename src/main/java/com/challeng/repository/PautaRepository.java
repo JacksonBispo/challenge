@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PautaRespository extends JpaRepository<Pauta,Long > {
+public interface PautaRepository extends JpaRepository<Pauta,Long > {
 }
+
