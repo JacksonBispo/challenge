@@ -16,4 +16,6 @@ public class Associado {
 
     private String name;
 
+    private String cpf;
+
 }

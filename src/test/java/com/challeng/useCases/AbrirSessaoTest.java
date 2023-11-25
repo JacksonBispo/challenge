@@ -38,7 +38,7 @@ public class AbrirSessaoTest {
     private AbrirSessao abrirSessao;
 
     @Test
-    public void testExecute() {
+    public void shouldOpenSession() {
 
         var pautaId = 1L;
         int duracaoMinutos = 10;
@@ -47,13 +47,20 @@ public class AbrirSessaoTest {
 
         Pauta pautaMock = new Pauta();
         pautaMock.setId(pautaId);
-        pautaMock.setDescricao("pauta teste");
+        pautaMock.setDescricao("Pauta teste");
 
         when(pautaRepository.findById(pautaId)).thenReturn(Optional.of(pautaMock));
+
+        when(sessaoRepository.save(any(Sessao.class))).thenAnswer(invocation -> {
+            Sessao sessaoToSave = invocation.getArgument(0);
+            sessaoToSave.setId(1L);
+            return sessaoToSave;
+        });
 
         var result = abrirSessao.execute(pautaId, duracaoMinutos);
 
         verify(sessaoRepository).save(any(Sessao.class));
-
+        assertEquals(1L, result.id());
+        assertEquals(pautaId, result.pauta());
     }
 }

@@ -18,7 +18,7 @@ public class Voto {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sessao_id")
     private Sessao sessaoVotacao;
 

@@ -1,7 +1,6 @@
 package com.challeng.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +24,13 @@ public class Sessao {
     @JoinColumn(name = "pauta_id")
     private Pauta pauta;
 
-    private LocalDateTime inicio;
+    @ManyToOne
+    @JoinColumn(name = "voto_id")
+    private Voto voto;
 
-    private LocalDateTime fim;
+    private LocalDateTime inicio = LocalDateTime.now();
+
+    private LocalDateTime fim = inicio.plusMinutes(1);
 
     public Boolean opened(){
         LocalDateTime now = LocalDateTime.now();

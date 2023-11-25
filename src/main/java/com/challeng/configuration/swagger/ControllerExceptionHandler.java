@@ -1,5 +1,6 @@
 package com.challeng.configuration.swagger;
 
+import com.challeng.exception.SessionCosedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.ObjectNotFoundException;
@@ -23,6 +24,12 @@ public class ControllerExceptionHandler {
 
         var list = ex.getFieldErrors();
         return ResponseEntity.badRequest().body(list.stream().map(ErrorValidationData::new).toList());
+    }
+
+    @ExceptionHandler(SessionCosedException.class)
+    public ResponseEntity sessioclosed(MethodArgumentNotValidException ex){
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     public record ErrorValidationData(String field, String message){

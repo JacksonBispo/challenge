@@ -24,26 +24,26 @@ public class AbrirSessao {
 
     private final SessaoRepository sessaoRepository;
 
-    public Sessao execute(Long pautaId, Integer duracaoMinutos) {
+    public SessaoDTO execute(Long pautaId, Integer duracaoMinutos) {
         log.info("search pauta with id: {} ", pautaId);
-        var pauta = pautaRepository.findById(pautaId)
+                var pauta = pautaRepository.findById(pautaId)
                 .orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada com o ID: " + pautaId));
         var start = LocalDateTime.now();
         var end = start.plusMinutes(duracaoMinutos);
 
-        var sessaoDTO = new SessaoDTO(
-                null,
-                pauta.getId(),
-                start,
-                end
-        );
-        var entity = new Sessao(
-                sessaoDTO.id(),
-                pauta,
-                sessaoDTO.start(),
-                sessaoDTO.end()
-        );
+
+        var entity = new Sessao();
+                entity.setPauta(pauta);
+                entity.setInicio(start);
+                entity.setFim(end);
         log.info("saving a new Session Vote..");
-        return sessaoRepository.save(entity);
+        var sessaoSaved = sessaoRepository.save(entity);
+        return new SessaoDTO(
+                sessaoSaved.getId(),
+                sessaoSaved.getPauta().getId(),
+                sessaoSaved.getInicio(),
+                sessaoSaved.getFim()
+        );
+
     }
 }

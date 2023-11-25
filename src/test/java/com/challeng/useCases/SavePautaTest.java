@@ -33,7 +33,7 @@ public class SavePautaTest {
 
         );
 
-        var entityPauta = new Pauta(pauta.id(), pauta.descricao());
+        var entityPauta = new Pauta(pauta.id(), pauta.descricao(), null);
         Mockito.when(pautaRespository.save(any(Pauta.class))).thenReturn(entityPauta);
 
         var result = savePauta.execute(pauta);

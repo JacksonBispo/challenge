@@ -1,11 +1,16 @@
 package com.challeng.useCases;
 
+import com.challeng.configuration.swagger.FeatureToogleConfig;
 import com.challeng.domain.Associado;
 import com.challeng.domain.Sessao;
 import com.challeng.domain.Voto;
 import com.challeng.domain.VotoEnum;
+import com.challeng.dto.StatusCpfDTO;
+import com.challeng.dto.VotoDTO;
+import com.challeng.repository.AssociadoRepository;
 import com.challeng.repository.SessaoRepository;
 import com.challeng.repository.VotoRepository;
+import com.challeng.service.CheckingCPF;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,18 +27,26 @@ import static org.mockito.Mockito.*;
 public class RegistraVotoTest {
 
 
-
     @Mock
     private SessaoRepository sessaoRepository;
 
     @Mock
     private VotoRepository votoRepository;
 
+    @Mock
+    private AssociadoRepository associadoRepository;
+
+    @Mock
+    private CheckingCPF checkingCPF;
+
+    @Mock
+    private FeatureToogleConfig featureToogleConfig;
+
     @InjectMocks
     private RegistrarVotos registrarVotos;
 
     @Test
-    public void testRegistrarVoto() {
+    public void testRegistrarVotoWithFeatureToggleEnable() {
         Long sessaoVotacaoId = 1L;
         Long associadoId = 2L;
 
@@ -41,22 +54,75 @@ public class RegistraVotoTest {
         sessaoVotacaoMock.setId(sessaoVotacaoId);
         sessaoVotacaoMock.setInicio(LocalDateTime.now());
         sessaoVotacaoMock.setFim(LocalDateTime.now().plusMinutes(10));
-
         when(sessaoRepository.findById(sessaoVotacaoId)).thenReturn(Optional.of(sessaoVotacaoMock));
 
         when(votoRepository.existsBySessaoVotacaoIdAndAssociadoId(sessaoVotacaoId, associadoId)).thenReturn(false);
 
-        var associado = new Associado();
-        associado.setId(1L);
-        associado.setName("testes");
+        when(votoRepository.save(any(Voto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Voto voto = new Voto();
-        voto.setSessaoVotacao(sessaoVotacaoMock);
-        voto.setAssociado(associado);
+
+        var associado = new Associado();
+        associado.setId(associadoId);
+        associado.setName("testes");
+        associado.setCpf("39219796848");
+
+        when(associadoRepository.findById(associadoId)).thenReturn(Optional.of(associado));
+
+        when(checkingCPF.checkCpf("39219796848")).thenReturn(new StatusCpfDTO("ABLE_TO_VOTE"));
+
+        when(featureToogleConfig.getCheckingCpf()).thenReturn(true);
+        var voto = new VotoDTO(
+                sessaoVotacaoId,
+                associadoId,
+                VotoEnum.NAO
+        );
+
+        var votoEntity = new Voto();
+        votoEntity.setAssociado(associado);
+        votoEntity.setSessaoVotacao(sessaoVotacaoMock);
+        sessaoVotacaoMock.setVoto(votoEntity);
 
         registrarVotos.execute(voto);
 
-        verify(votoRepository, times(1)).save(voto);
+    }
+
+    @Test
+    public void testRegistrarVotoWithFeatureToggleDisable() {
+        Long sessaoVotacaoId = 1L;
+        Long associadoId = 2L;
+
+        var sessaoVotacaoMock = new Sessao();
+        sessaoVotacaoMock.setId(sessaoVotacaoId);
+        sessaoVotacaoMock.setInicio(LocalDateTime.now());
+        sessaoVotacaoMock.setFim(LocalDateTime.now().plusMinutes(10));
+        when(sessaoRepository.findById(sessaoVotacaoId)).thenReturn(Optional.of(sessaoVotacaoMock));
+
+        when(votoRepository.existsBySessaoVotacaoIdAndAssociadoId(sessaoVotacaoId, associadoId)).thenReturn(false);
+
+        when(votoRepository.save(any(Voto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        var associado = new Associado();
+        associado.setId(associadoId);
+        associado.setName("testes");
+        associado.setCpf("39219796848");
+
+        when(associadoRepository.findById(associadoId)).thenReturn(Optional.of(associado));
+
+        when(featureToogleConfig.getCheckingCpf()).thenReturn(false);
+        var voto = new VotoDTO(
+                sessaoVotacaoId,
+                associadoId,
+                VotoEnum.NAO
+        );
+
+        var votoEntity = new Voto();
+        votoEntity.setAssociado(associado);
+        votoEntity.setSessaoVotacao(sessaoVotacaoMock);
+        sessaoVotacaoMock.setVoto(votoEntity);
+
+        registrarVotos.execute(voto);
+
     }
 
     @Test
@@ -72,13 +138,24 @@ public class RegistraVotoTest {
         sessaoVotacaoMock.setInicio(LocalDateTime.now());
         sessaoVotacaoMock.setFim(LocalDateTime.now().plusMinutes(10));
 
-        var voto = new Voto();
-        voto.setVoto(VotoEnum.NAO);
-        voto.setSessaoVotacao(sessaoVotacaoMock);
-        voto.setAssociado(associado);
+
+        var voto = new VotoDTO(
+                sessaoVotacaoId,
+                associado.getId(),
+                VotoEnum.NAO
+        );
+
+        var votoEntity = new Voto();
+        votoEntity.setId(null);
+        votoEntity.setAssociado(associado);
+        votoEntity.setSessaoVotacao(sessaoVotacaoMock);
         when(sessaoRepository.findById(sessaoVotacaoId)).thenReturn(Optional.of(sessaoVotacaoMock));
 
         when(votoRepository.existsBySessaoVotacaoIdAndAssociadoId(sessaoVotacaoId, associadoId)).thenReturn(true);
+
+        when(associadoRepository.findById(associadoId)).thenReturn(Optional.of(associado));
+
+        when(checkingCPF.checkCpf("39219796848")).thenReturn(new StatusCpfDTO("ABLE_TO_VOTE"));
 
         assertThrows(IllegalStateException.class, () -> {
             registrarVotos.execute(voto);

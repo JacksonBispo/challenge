@@ -10,11 +10,27 @@ spring:
       hibernate:
         format_sql=true:
   flyway.enabled: false
-
   mvc:
     path-match:
       matching-strategy: ant_path_matcher
     throw-exception-if-no-handler-found: true
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+topic:
+  result-messages: result_messages
+
 spring-doc:
   swagger-ui:
     path: /swagger-ui.html
+
+api:
+  mock:
+    url: https://run.mocky.io/v3/57f23672-c15f-48f8-90d3-d84ce00250b8/users/
+
+checkingCpf:
+      feature:
+        toogle: false

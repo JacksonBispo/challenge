@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +22,7 @@ public class Pauta {
 
     @Column(nullable = false)
     private String descricao;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Voto> votos = new ArrayList<>();
 }

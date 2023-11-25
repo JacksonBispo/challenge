@@ -15,13 +15,16 @@ public class SavePauta {
 
     private final PautaRepository repository;
 
-    public Pauta execute(@Valid  PautaDTO pautaDTO){
+    public PautaDTO execute(@Valid  PautaDTO pautaDTO){
         log.info("Instance of a new Pauta");
         var pauta = new Pauta(
                 pautaDTO.id(),
-                pautaDTO.descricao()
+                pautaDTO.descricao(),
+                null
         );
         log.info("Save the new Pauta");
-        return  repository.save(pauta);
+        var pautaSaved =   repository.save(pauta);
+
+        return new PautaDTO(pautaSaved.getId(), pautaSaved.getDescricao());
     }
 }
