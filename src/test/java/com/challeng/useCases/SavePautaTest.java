@@ -28,7 +28,7 @@ public class SavePautaTest {
     void shouldSavePautaSuccess(){
 
         var pauta = new PautaDTO(
-                null,
+                1L,
                 "Pauta test"
 
         );
@@ -40,6 +40,7 @@ public class SavePautaTest {
 
         Mockito.verify(pautaRespository).save(any(Pauta.class));
 
-        Assertions.assertEquals(result, entityPauta);
+        Assertions.assertEquals(result.id(), entityPauta.getId());
+        Assertions.assertEquals(result.descricao(), entityPauta.getDescricao());
     }
 }
