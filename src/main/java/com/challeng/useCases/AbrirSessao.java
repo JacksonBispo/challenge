@@ -1,16 +1,12 @@
 package com.challeng.useCases;
 
-import com.challeng.domain.Pauta;
 import com.challeng.domain.Sessao;
-import com.challeng.dto.PautaDTO;
 import com.challeng.dto.SessaoDTO;
 import com.challeng.exception.EntityNotFoundException;
 import com.challeng.repository.PautaRepository;
 import com.challeng.repository.SessaoRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

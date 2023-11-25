@@ -61,6 +61,6 @@ public class AbrirSessaoTest {
 
         verify(sessaoRepository).save(any(Sessao.class));
         assertEquals(1L, result.id());
-        assertEquals(pautaId, result.pauta());
+        assertEquals(pautaId, result.pautaId());
     }
 }

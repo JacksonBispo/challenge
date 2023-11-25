@@ -1,7 +1,6 @@
 package com.challeng.useCases;
 
 import com.challeng.configuration.swagger.FeatureToogleConfig;
-import com.challeng.domain.Associado;
 import com.challeng.domain.Sessao;
 import com.challeng.domain.Voto;
 import com.challeng.dto.VotoDTO;

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record SessaoDTO(
          Long id,
-         Long pauta,
+         Long pautaId,
          LocalDateTime start,
          LocalDateTime end
 ) {
