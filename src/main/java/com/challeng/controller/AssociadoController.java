@@ -20,8 +20,8 @@ public class AssociadoController {
 
     @PostMapping("/save")
     public ResponseEntity<AssociadoDTO> save(@RequestBody @Valid AssociadoDTO associadoDTO, UriComponentsBuilder uriBuilder){
-        var associado =  saveAssociado.execute(associadoDTO);
-        var uri = uriBuilder.path("associado/{id}").buildAndExpand(associado.id()).toUri();
+            var associado =  saveAssociado.execute(associadoDTO);
+            var uri = uriBuilder.path("associado/{id}").buildAndExpand(associado.id()).toUri();
         return ResponseEntity.created(uri).body(associado);
     }
 }

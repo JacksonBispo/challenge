@@ -1,5 +1,20 @@
-version: '3'
+version: '3.8'
+
 services:
+  postgres-db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=challenge
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=root
+  spring-app:
+    image: challenge:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     networks:

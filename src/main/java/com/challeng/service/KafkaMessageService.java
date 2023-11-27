@@ -16,6 +16,6 @@ public class KafkaMessageService {
     private final KafkaTemplate<String,String> kafkaTemplate;
 
     public void sendMessage(String message){
-            this.kafkaTemplate.send(topicResultPautMessages, message);
+          this.kafkaTemplate.send(topicResultPautMessages, message);
     }
 }
